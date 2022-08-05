@@ -3,10 +3,9 @@ Copyright (C) Andrew 2022
 """
 
 import numpy as np
-from numpy import nan
 import matplotlib.pyplot as plt
 from comparison_data import data, num_dataset
-import matplotlib.cm as cm
+import random
 
 # CONFIGURATION:
 degrees = 65
