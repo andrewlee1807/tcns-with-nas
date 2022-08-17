@@ -1,0 +1,1 @@
+This comparison was inspired by [Canziani et al](https://arxiv.org/abs/1605.07678) and:
