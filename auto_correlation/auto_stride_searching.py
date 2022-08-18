@@ -25,7 +25,7 @@ def arg_parse(parser):
     parser.add_argument('--num_features', type=int, default=1, help='Number of features')
     parser.add_argument('--max_trials', type=int, default=20, help='Max trials')
     parser.add_argument('--device', type=int, default=0, help='CUDA Device')
-    parser.add_argument('--write_log_file', type=bool, default=True, help='CUDA Device')
+    parser.add_argument('--write_log_file', type=bool, default=True, help='Export to log file')
     return parser.parse_args()
 
 
