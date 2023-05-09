@@ -5,27 +5,30 @@ sys.path.insert(0, '../')
 import os
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 
-from utils import AreaEnergy, TSF_Data
+import pandas as pd
 
-공대7호관_HV_02 = AreaEnergy('공대7호관.HV_02',
-                         path_time=r"../../dataset/Electricity data_CNU/3.unit of time(일보)/")
+from utils import AreaEnergy, TSF_Data
+#
+# 공대7호관_HV_02 = AreaEnergy('공대7호관.HV_02',
+#                          path_time=r"../Dataset/cnu-dataset/3.unit of time(일보)/")
+
+datapath = "https://raw.githubusercontent.com/andrewlee1807/Weights/main/datasets/%EA%B3%B5%EB%8C%807%ED%98%B8%EA%B4%80_HV_02_datetime.csv"
+df = pd.read_csv(datapath)
+data_seq = df['전력사용량'].to_numpy()
 
 list_dataset = ['household', 'spain', 'cnu']
 num_data = 2
 result_path = list_dataset[num_data] + '/cnu_result_auto'
 
 import keras_tuner as kt
-import os
-import pandas as pd
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-from keras.layers import Dense, LSTM
-from keras import Sequential
+from keras.layers import Dense
 import tensorflow as tf
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense, Input
@@ -84,7 +87,7 @@ max_trials = 20
 input_width = 168
 
 # for output_width in range(36, 73, 12):
-for output_width in [54, 66, 78, 56, 58, 62, 70, 80]:
+for output_width in list(range(1, 25)):
     # Search model
     exp_path = "CNU_TCN_Tune/Bayesian/" + str(output_width) + "/"
     tuning_path = exp_path + "/models"
@@ -94,7 +97,8 @@ for output_width in [54, 66, 78, 56, 58, 62, 70, 80]:
 
         shutil.rmtree(tuning_path)
 
-    tsf = TSF_Data(data=공대7호관_HV_02.arr_seq_dataset,
+    # tsf = TSF_Data(data=공대7호관_HV_02.arr_seq_dataset,
+    tsf = TSF_Data(data=data_seq,
                    input_width=input_width,
                    output_width=output_width,
                    train_ratio=0.9)
