@@ -4,8 +4,8 @@ sys.path.insert(0, '../')
 
 import os
 
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
@@ -49,7 +49,7 @@ def model_builder(hp):
     def dilation_gen(x): return list(map(temp, range(x)))
 
     dilations = hp.Choice('dilations', values=list(range(2, 8)))
-    nb_stacks = hp.Choice('nb_stacks', values=[1, 2, 3, 4, 5])
+    # nb_stacks = hp.Choice('nb_stacks', values=[1, 2, 3, 4, 5])
     # nb_units_lstm = hp.Int('units_LSTM', min_value=32, max_value=320, step=32)
 
     x1 = TCN(input_shape=(input_width, 1),
@@ -120,7 +120,7 @@ for output_width in list(range(1, 25)):
     tuner = kt.Hyperband(
         hypermodel=model_builder,
         objective=kt.Objective("val_loss", direction="min"),
-        max_epochs=30,
+        max_epochs=10,
         factor=3,
         seed=42,
         hyperband_iterations=1,
