@@ -23,7 +23,7 @@ data_seq = df['전력사용량'].to_numpy()
 
 list_dataset = ['household', 'spain', 'cnu']
 num_data = 2
-result_path = list_dataset[num_data] + '/cnu_result_auto'
+result_path = list_dataset[num_data] + '/cnu_result_hyper'
 
 import keras_tuner as kt
 
@@ -110,14 +110,25 @@ for output_width in list(range(1, 25)):
 
     print("[INFO] instantiating a random search tuner object...")
 
-    tuner = kt.BayesianOptimization(
-        model_builder,
+    # tuner = kt.BayesianOptimization(
+    #     model_builder,
+    #     objective=kt.Objective("val_loss", direction="min"),
+    #     max_trials=max_trials,
+    #     seed=42,
+    #     directory=tuning_path)
+    
+    tuner = kt.Hyperband(
+        hypermodel=model_builder,
         objective=kt.Objective("val_loss", direction="min"),
-        max_trials=max_trials,
+        max_epochs=30,
+        factor=3,
         seed=42,
-        directory=tuning_path)
+        hyperband_iterations=1,
+        distribution_strategy=tf.distribute.MirroredStrategy(),
+        directory=tuning_path,
+    )
 
-    # stop_early = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5)
+    stop_early = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5)
 
     orig_stdout = sys.stdout
     f = open(result_path + f'/seaching_process_log_cnu_{str(output_width)}.txt', 'w')
@@ -125,7 +136,7 @@ for output_width in list(range(1, 25)):
 
     tuner.search(tsf.data_train[0], tsf.data_train[1],
                  validation_data=tsf.data_valid,
-                 callbacks=[tf.keras.callbacks.TensorBoard(exp_path + "/log")],
+                 callbacks=[tf.keras.callbacks.TensorBoard(exp_path + "/log"), stop_early],
                  epochs=10)
 
     # Get the optimal hyperparameters
