@@ -1,4 +1,5 @@
-##Stride-TCN for energy consumption forecasting and its optimization
+# Stride-TCN for energy consumption forecasting and its optimization
+Link to Paper : [Appl. Sci. 2022](https://www.mdpi.com/2076-3417/12/19/9422)
 
 ## Requirements
 [![Stable Version](https://img.shields.io/badge/tcn-3.4.0-blue)](https://pypi.org/project/keras-tcn/)
